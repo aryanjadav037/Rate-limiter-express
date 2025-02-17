@@ -1,21 +1,16 @@
-const express = require('express');
-const rateLimit = require('express-rate-limit');
+import express from 'express';
+import rateLimitPlugin from './middleware/rateLimiterAuth.js';
+import rateLimitwithoutPlugin from './middleware/withoutPluginAuth.js';
 
 const app = express();
 const PORT = 3000;
 
-const limiter = rateLimit({
-    windowMs:1*60*1000,
-    max : 5,
-    handler : (req,res) =>{
-        res.status(429).json({error:'too many requests ,please try again later'});
-        }
+app.get('/home',rateLimitPlugin,(req,res) => {
+    res.send('welcome to home');
 });
 
-app.use(limiter);
-
-app.get('/',(req,res) => {
-    res.send('welcome home');
+app.get('/profile',rateLimitwithoutPlugin,(req,res) => {
+    res.send('welcome to profile');
 });
 
 app.listen(PORT,() =>{
