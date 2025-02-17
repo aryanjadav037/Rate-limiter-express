@@ -1,7 +1,7 @@
-const WINDOW_SIZE_IN_SECONDS = 60;  // 1-minute window
-const MAX_REQUESTS = 5;  // Max requests per window
+const WINDOW_SIZE_IN_SECONDS = 60;
+const MAX_REQUESTS = 5;  
 
-const requestCounter = {}; // Stores request counts per IP
+const requestCounter = {}; 
 
 function rateLimitWithoutPlugin(req, res, next) {
     const ip = req.ip;
@@ -21,7 +21,7 @@ function rateLimitWithoutPlugin(req, res, next) {
         }
         requestCounter[ip].count++;
     } else {
-        // Reset count after window expires
+        
         requestCounter[ip] = { count: 1, startTime: currentTime };
     }
 
@@ -29,7 +29,6 @@ function rateLimitWithoutPlugin(req, res, next) {
     next();
 }
 
-// ✅ Cleanup function to remove inactive IPs and prevent memory leaks
 setInterval(() => {
     const now = Date.now();
     for (const ip in requestCounter) {
@@ -37,6 +36,6 @@ setInterval(() => {
             delete requestCounter[ip];
         }
     }
-}, WINDOW_SIZE_IN_SECONDS * 1000); // Runs every window size interval
+}, WINDOW_SIZE_IN_SECONDS * 1000);
 
 export default rateLimitWithoutPlugin;
